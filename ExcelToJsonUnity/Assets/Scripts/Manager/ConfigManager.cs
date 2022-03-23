@@ -158,6 +158,87 @@ public class ConfigManager
     }
 
     /// <summary>
+    /// 导出服务端json
+    /// </summary>
+    /// <param name="excelPath"></param>
+    /// <param name="exprotPath"></param>
+    public void ExprotServerJson(string excelPath, string exprotPath)
+    {
+
+        try
+        {
+            //创建文件夹
+            //FileManager.Ins.CreateDirPath(exprotPath.Substring(0, exprotPath.LastIndexOf("\\") + 1));
+            FileManager.Ins.CreateDirPath(exprotPath);
+        }
+        catch
+        {
+            Message("文件夹创建失败,路径不合法!");
+            return;
+        }
+
+        Dictionary<string, LoData> dict = null;
+        Dictionary<string, string> jsonDict = null;
+        try
+        {
+            //转化本地数据结构,创建表格字典
+            dict = ConfigManager.Ins.LoadExcel(excelPath, true);
+        }
+        catch (Exception ex)
+        {
+            Message("读取表格错误 信息:" + ex.Message);
+            return;
+        }
+
+        try
+        {
+            //转成json字符串
+            jsonDict = this.ToJsonDict(dict);
+        }
+        catch (Exception ex)
+        {
+            Message("表格转成json字符串错误 信息:" + ex.Message);
+            return;
+        }
+
+
+        if (exprotPath[exprotPath.Length - 1] != '\\')
+        {
+            exprotPath += '\\';
+        }
+
+        foreach (var configName in jsonDict.Keys)
+        {
+            var fullPath = exprotPath + configName + ".json";
+            var jsonStr = jsonDict[configName];
+            try
+            {
+                //输出json文件
+                FileManager.Ins.ExportFile(jsonStr, fullPath);
+                Message(configName + "导出成功!");
+            }
+            catch (Exception ex)
+            {
+                Message(configName + "表格转成json错误 信息:" + ex.Message);
+                return;
+            }
+        }
+
+        //try
+        //{
+        //    //输出json文件
+        //    FileManager.Ins.ExportFile(jsonStr, exprotPath);
+        //    Message("JSON导出成功!");
+        //}
+        //catch (Exception ex)
+        //{
+        //    Message("表格转成json错误 信息:" + ex.Message);
+        //    return;
+        //}
+
+    }
+
+    /// <summary>
     /// 把表数据解析成json
     /// </summary>
     /// <param name="dict"></param>
@@ -174,74 +255,12 @@ public class ConfigManager
             var configDict = jsonDict[configName] as IDictionary;
 
             var loData = dict[configName];
-            var values = loData.values;
-            for (int i = 0; i < values.Count; i++)
+            var jdList = LoDataToJsonDataList(loData);
+
+            for (int i = 0; i < jdList.Count; i++)
             {
                 int rowNum = (i + 1);
-                //configDict.Add(rowNum.ToString(), new JsonData());
-                var jd = JsonMapper.ToObject("{}");
-
-                var rowValue = values[i];
-                foreach (string name in rowValue.Keys)
-                {
-                    var typeIndex = loData.names.IndexOf(name);
-                    var type = loData.types[typeIndex];
-                    var valueStr = rowValue[name];
-
-                    int int_val;
-                    double float_val;
-                    bool isInt;
-                    bool isFloat;
-
-                    switch (type)
-                    {
-                        //整形
-                        case "int":
-                            isInt = int.TryParse(valueStr, out int_val);
-                            jd[name] = isInt ? int_val : 0;
-                            break;
-
-                        case "string":
-                            if (valueStr != null)
-                            {
-                                jd[name] = valueStr.Replace("\"","\\\"");
-                            }
-                            break;
-
-                        case "float":
-                        case "double":
-                            isInt = int.TryParse(valueStr, out int_val);
-                            if (isInt)
-                            {
-                                jd[name] = int_val;
-                            }
-                            else
-                            {
-                                isFloat = double.TryParse(valueStr, out float_val);
-                                if (isFloat)
-                                {
-                                    jd[name] = float_val;
-                                }
-                                else
-                                {
-                                    jd[name] = 0;
-                                }
-                            }
-                            break;
-
-                        case "bool":
-                            if (valueStr == "true" || valueStr == "TRUE" || valueStr == "1")
-                            {
-                                jd[name] = true;
-                            }
-                            else
-                            {
-                                jd[name] = false;
-                            }
-                            break;
-                    }
-                }
-                configDict.Add(rowNum.ToString(), jd);
+                configDict.Add(rowNum.ToString(), jdList[i]);
             }
         }
 
@@ -250,6 +269,100 @@ public class ConfigManager
         str = System.Text.RegularExpressions.Regex.Unescape(str);
         return str;
     }
+
+    public List<JsonData> LoDataToJsonDataList(LoData loData)
+    {
+        List<JsonData> ret = new List<JsonData>();
+
+        var values = loData.values;
+        for (int i = 0; i < values.Count; i++)
+        {
+            //configDict.Add(rowNum.ToString(), new JsonData());
+            var jd = JsonMapper.ToObject("{}");
+
+            var rowValue = values[i];
+            foreach (string name in rowValue.Keys)
+            {
+                var typeIndex = loData.names.IndexOf(name);
+                var type = loData.types[typeIndex];
+                var valueStr = rowValue[name];
+
+                int int_val;
+                double float_val;
+                bool isInt;
+                bool isFloat;
+
+                switch (type)
+                {
+                    //整形
+                    case "int":
+                        isInt = int.TryParse(valueStr, out int_val);
+                        jd[name] = isInt ? int_val : 0;
+                        break;
+
+                    case "string":
+                        if (valueStr != null)
+                        {
+                            jd[name] = valueStr.Replace("\"", "\\\"");
+                        }
+                        break;
+
+                    case "float":
+                    case "double":
+                        isInt = int.TryParse(valueStr, out int_val);
+                        if (isInt)
+                        {
+                            jd[name] = int_val;
+                        }
+                        else
+                        {
+                            isFloat = double.TryParse(valueStr, out float_val);
+                            if (isFloat)
+                            {
+                                jd[name] = float_val;
+                            }
+                            else
+                            {
+                                jd[name] = 0;
+                            }
+                        }
+                        break;
+
+                    case "bool":
+                        if (valueStr == "true" || valueStr == "TRUE" || valueStr == "1")
+                        {
+                            jd[name] = true;
+                        }
+                        else
+                        {
+                            jd[name] = false;
+                        }
+                        break;
+                }
+            }
+            ret.Add(jd);
+        }
+
+        return ret;
+    }
+
+    public Dictionary<string, string> ToJsonDict(Dictionary<string, LoData> dict)
+    {
+        var ret = new Dictionary<string, string>();
+        foreach (var configName in dict.Keys)
+        {
+            var loData = dict[configName];
+            var jdList = LoDataToJsonDataList(loData);
+
+            var str = JsonMapper.ToJson(jdList);
+            //这句代码是为了解决unicode 转 中文问题
+            str = System.Text.RegularExpressions.Regex.Unescape(str);
+            ret.Add(loData.name, str);
+        }
+
+        return ret;
+    }
+    
 
     /// <summary>
     /// LoData转Lo类字符串
@@ -295,7 +408,7 @@ public class ConfigManager
     /// 加载excel
     /// </summary>
     /// <param name="path"></param>
-    public Dictionary<string, LoData> LoadExcel(string path)
+    public Dictionary<string, LoData> LoadExcel(string path, bool isServer = false)
     {
         //获得文件路径列表
         var fileList = FileManager.Ins.GetExcelFilePathList(path);
@@ -312,7 +425,7 @@ public class ConfigManager
         //把所有sheet转化成loData
         for (int i = 0; i < sheetDatas.Count; i++)
         {
-            var loData = GetLoDataByTable(sheetDatas[i]);
+            var loData = GetLoDataByTable(sheetDatas[i], isServer);
             if (loData != null)
             {
                 loData.fullPath = path;
@@ -336,7 +449,7 @@ public class ConfigManager
     /// </summary>
     /// <param name="table"></param>
     /// <returns></returns>
-    public LoData GetLoDataByTable(DataTable table)
+    public LoData GetLoDataByTable(DataTable table, bool isServer)
     {
         var loData = new LoData();
         loData.nameDesc = table.TableName;
@@ -385,11 +498,11 @@ public class ConfigManager
                     {
                         if (value != "CLIENT")
                         {
-                            //这表表没有客户端数据,不需要解释
+                            //这表表没有数据,不需要解释
                             return null;
                         }
                     }
-                    else if (x > 0)
+                    else if (x > 0 && !isServer)
                     {
                         loData.names.Add(value);
                     }
@@ -397,6 +510,18 @@ public class ConfigManager
                 else if (y == 3)
                 {
                     //服务端字段名
+                    if (x == 0)
+                    {
+                        if (value != "SERVER")
+                        {
+                            //这表表没有数据,不需要解释
+                            return null;
+                        }
+                    }
+                    else if (x > 0 && isServer)
+                    {
+                        loData.names.Add(value);
+                    }
                 }
                 else
                 {

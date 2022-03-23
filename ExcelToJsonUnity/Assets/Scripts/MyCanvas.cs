@@ -147,6 +147,22 @@ public class MyCanvas : MonoBehaviour
         ConfigManager.Ins.ExprotJson(pathInput.text, jsonInput.text);
     }
 
+    public void ExprotServerJson()
+    {
+        if (string.IsNullOrEmpty(pathInput.text))
+        {
+            Log("表格路径不能为空!");
+            return;
+        }
+        if (string.IsNullOrEmpty(jsonInput.text))
+        {
+            Log("Json输出路径不能为空!");
+            return;
+        }
+
+        ConfigManager.Ins.ExprotServerJson(pathInput.text, jsonInput.text);
+    }
+
     public void ExprotLo()
     {
         if (string.IsNullOrEmpty(pathInput.text))
