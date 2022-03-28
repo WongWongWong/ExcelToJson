@@ -354,7 +354,14 @@ public class ConfigManager
             var loData = dict[configName];
             var jdList = LoDataToJsonDataList(loData);
 
-            var str = JsonMapper.ToJson(jdList);
+            var jd = new JsonData();
+            var ary = jd as IList;
+            for (int i = 0; i < jdList.Count; i++)
+            {
+                ary.Add(jdList[i]);
+            }
+
+            var str = JsonMapper.ToJson(ary);
             //这句代码是为了解决unicode 转 中文问题
             str = System.Text.RegularExpressions.Regex.Unescape(str);
             ret.Add(loData.name, str);
