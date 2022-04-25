@@ -101,7 +101,7 @@ public class ConfigManager
         {
             //创建文件夹
             //FileManager.Ins.CreateDirPath(exprotPath.Substring(0, exprotPath.LastIndexOf("\\") + 1));
-            
+
             if (exprotPath.IndexOf("\\") != -1)
             {
                 FileManager.Ins.CreateDirPath(exprotPath.Substring(0, exprotPath.LastIndexOf("\\") + 1));
@@ -369,7 +369,7 @@ public class ConfigManager
 
         return ret;
     }
-    
+
 
     /// <summary>
     /// LoData转Lo类字符串
@@ -429,14 +429,28 @@ public class ConfigManager
         }
 
         var dict = new Dictionary<string, LoData>();
+
         //把所有sheet转化成loData
         for (int i = 0; i < sheetDatas.Count; i++)
         {
+            bool isEmpty = true;
             var loData = GetLoDataByTable(sheetDatas[i], isServer);
             if (loData != null)
             {
+                //检测是否有字段，如果都没有，代表这个表不需要到处
+                foreach (var name in loData.names)
+                {
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty)
+                    continue;
+
                 loData.fullPath = path;
-                if(dict.ContainsKey(loData.name))
+                if (dict.ContainsKey(loData.name))
                 {
                     //重复名字的表,抽空再处理
                     var oldLoData = dict[loData.name];
@@ -548,7 +562,7 @@ public class ConfigManager
                         {
                             try
                             {
-                                if(!string.IsNullOrEmpty(value))
+                                if (!string.IsNullOrEmpty(value))
                                 {
                                     newValues.Add(name, value);
                                 }
@@ -565,7 +579,7 @@ public class ConfigManager
                 }
             }
 
-            if(newValues.Values.Count > 0)
+            if (newValues.Values.Count > 0)
             {
                 loData.values.Add(newValues);
             }
@@ -581,7 +595,7 @@ public class ConfigManager
 
     void Message(string message)
     {
-        if(_msgCall != null)
+        if (_msgCall != null)
         {
             _msgCall(message);
         }
