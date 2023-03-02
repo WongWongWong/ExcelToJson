@@ -246,12 +246,12 @@ public class ConfigManager
     public string ToJson(Dictionary<string, LoData> dict)
     {
         //var jsonDict = new Dictionary<string, Dictionary<string, string>>();
-        var jsonDict = new JsonData() as IDictionary;
+        var jsonDict = JsonMapper.ToObject("{}") as IDictionary;
 
         foreach (string configName in dict.Keys)
         {
             //jsonDict.Add(configName, new Dictionary<string, string>());
-            jsonDict.Add(configName, new JsonData());
+            jsonDict.Add(configName, JsonMapper.ToObject("{}"));
             var configDict = jsonDict[configName] as IDictionary;
 
             var loData = dict[configName];
@@ -354,7 +354,7 @@ public class ConfigManager
             var loData = dict[configName];
             var jdList = LoDataToJsonDataList(loData);
 
-            var jd = new JsonData();
+            var jd = JsonMapper.ToObject("{}");
             var ary = jd as IList;
             for (int i = 0; i < jdList.Count; i++)
             {
