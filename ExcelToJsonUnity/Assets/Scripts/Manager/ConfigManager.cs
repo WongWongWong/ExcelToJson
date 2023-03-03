@@ -354,7 +354,7 @@ public class ConfigManager
             var loData = dict[configName];
             var jdList = LoDataToJsonDataList(loData);
 
-            var jd = JsonMapper.ToObject("{}");
+            var jd = JsonMapper.ToObject("[]");
             var ary = jd as IList;
             for (int i = 0; i < jdList.Count; i++)
             {
