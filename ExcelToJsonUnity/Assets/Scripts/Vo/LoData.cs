@@ -46,7 +46,7 @@ public class LoData
     public List<string> names;
 
     /// <summary>
-    /// 行数据
+    /// 行数据<成员名称,成员值>
     /// </summary>
     public List<Dictionary<string, string>> values;
 }

@@ -452,8 +452,32 @@ public class ConfigManager
                 loData.fullPath = path;
                 if (dict.ContainsKey(loData.name))
                 {
-                    //重复名字的表,抽空再处理
+                    //重复名字的表,做合并处理
                     var oldLoData = dict[loData.name];
+
+                    //遍历老成员名称,看缺了哪个
+                    for (int k = 0; k < loData.names.Count; k++)
+                    {
+                        string name = loData.names[k];
+                        string type = loData.types[k];
+                        if (string.IsNullOrEmpty(type)) continue;
+                        if (string.IsNullOrEmpty(name)) continue;
+
+                        //判断老表是否有该成员的基础记录
+                        var nameIndex = oldLoData.names.IndexOf(name);
+                        if (nameIndex == -1)
+                        {
+                            //添加相关数据
+                            string note = "";
+                            if (k < loData.types.Count) note = loData.notes[k];
+                            oldLoData.notes.Add(note);
+                            oldLoData.types.Add(type);
+                            oldLoData.names.Add(name);
+                        }
+                    }
+
+                    //合并值数据
+                    oldLoData.values.AddRange(loData.values);
                 }
                 else
                 {
