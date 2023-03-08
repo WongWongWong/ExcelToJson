@@ -1,8 +1,8 @@
 /// <summary> 
-/// 游戏配置
+/// 游戏配置 (2)
 /// Author:ConfigTool
 /// </summary>
-public class GameConfigSettingLO
+public class GameConfig123SettingLO
 {
 /// <summary> 
 /// 主键
@@ -18,11 +18,6 @@ public class GameConfigSettingLO
 /// 值
 /// </summary>
     public string value;
-
-/// <summary> 
-/// 测试值
-/// </summary>
-    public string TestValue;
 
 
 }
