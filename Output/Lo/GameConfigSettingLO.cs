@@ -1,7 +1,7 @@
 /// <summary> 
-/// 游戏配置
-/// D:\Git\ExcelToJcon\Config\GameConfigSetting.xlsx
-/// Author:ConfigTool
+/// Desc: 游戏配置
+/// Excel: GameConfigSetting.xlsx
+/// Author: ConfigTool
 /// </summary>
 public class GameConfigSettingLO
 {

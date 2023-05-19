@@ -21,6 +21,11 @@ public class LoData
     public string fullPath;
 
     /// <summary>
+    /// 表格名称
+    /// </summary>
+    public string excleName;
+
+    /// <summary>
     /// 表名描述
     /// </summary>
     public string nameDesc;

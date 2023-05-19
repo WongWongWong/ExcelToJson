@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 
 public class ConfigManager
 {
@@ -17,9 +18,9 @@ public class ConfigManager
 
     string classTemplate = "" +
     "/// <summary> \n" +
-    "/// $desc$\n" +
-    "/// $filePath$\n" +
-    "/// Author:ConfigTool\n" +
+    "/// Desc: $desc$\n" +
+    "/// Excel: $filePath$\n" +
+    "/// Author: ConfigTool\n" +
     "/// </summary>\n" +
     "public class $name$LO\n" +
     "{\n" +
@@ -405,7 +406,7 @@ public class ConfigManager
             memberStr += newMemberStr;
         }
 
-        var classStr = classTemplate.Replace("$desc$", data.nameDesc).Replace("$name$", data.name).Replace("$filePath$", data.fullPath);
+        var classStr = classTemplate.Replace("$desc$", data.nameDesc).Replace("$name$", data.name).Replace("$filePath$", data.excleName);
         classStr = classStr.Replace("$member$", memberStr);
 
         return classStr;
@@ -499,6 +500,7 @@ public class ConfigManager
         var loData = new LoData();
         loData.nameDesc = table.TableName;
         loData.fullPath = table.Namespace;
+        loData.excleName = Path.GetFileName(loData.fullPath);
 
         int columns = table.Columns.Count;//列
         int rows = table.Rows.Count;//行
