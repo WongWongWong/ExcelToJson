@@ -18,6 +18,7 @@ public class ConfigManager
     string classTemplate = "" +
     "/// <summary> \n" +
     "/// $desc$\n" +
+    "/// $filePath$\n" +
     "/// Author:ConfigTool\n" +
     "/// </summary>\n" +
     "public class $name$LO\n" +
@@ -26,9 +27,9 @@ public class ConfigManager
     "}";
 
     string memberTemplate = "" +
-        "/// <summary> \n" +
-        "/// $desc$\n" +
-        "/// </summary>\n" +
+        "    /// <summary> \n" +
+        "    /// $desc$\n" +
+        "    /// </summary>\n" +
         "    public $type$ $name$;\n\n";
 
 
@@ -404,7 +405,7 @@ public class ConfigManager
             memberStr += newMemberStr;
         }
 
-        var classStr = classTemplate.Replace("$desc$", data.nameDesc).Replace("$name$", data.name);
+        var classStr = classTemplate.Replace("$desc$", data.nameDesc).Replace("$name$", data.name).Replace("$filePath$", data.fullPath);
         classStr = classStr.Replace("$member$", memberStr);
 
         return classStr;
@@ -449,7 +450,6 @@ public class ConfigManager
                 if (isEmpty)
                     continue;
 
-                loData.fullPath = path;
                 if (dict.ContainsKey(loData.name))
                 {
                     //重复名字的表,做合并处理
@@ -498,7 +498,7 @@ public class ConfigManager
     {
         var loData = new LoData();
         loData.nameDesc = table.TableName;
-        //loData.fullPath = path;
+        loData.fullPath = table.Namespace;
 
         int columns = table.Columns.Count;//列
         int rows = table.Rows.Count;//行

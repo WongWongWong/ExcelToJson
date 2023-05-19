@@ -25,13 +25,15 @@ public class ExcelManager
         DataSet result = excelDataReader.AsDataSet();
         excelDataReader.Close();
 
-        if(result != null)
+        if (result != null)
         {
             var tables = result.Tables;
 
             for (int i = 0; i < tables.Count; i++)
             {
-                ret.Add(tables[i]);
+                var table = tables[i];
+                table.Namespace = excelFile;
+                ret.Add(table);
             }
         }
 
