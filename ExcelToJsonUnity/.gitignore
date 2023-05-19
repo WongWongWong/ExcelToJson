@@ -1,0 +1,9 @@
+/UserSettings
+/Library
+/Logs
+/obj
+/Temp
+/*.vsconfig
+/*.csproj
+/*.sln
+/.vs
