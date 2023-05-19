@@ -58,7 +58,7 @@ public class ConfigManager
         Dictionary<string, LoData> dict = null;
         try
         {
-            dict = this.LoadExcel(excelPath);
+            dict = LoadExcel(excelPath);
         }
         catch (Exception ex)
         {
@@ -122,11 +122,10 @@ public class ConfigManager
         }
 
         Dictionary<string, LoData> dict = null;
-        string jsonStr = "";
         try
         {
             //转化本地数据结构,创建表格字典
-            dict = ConfigManager.Ins.LoadExcel(excelPath);
+            dict = LoadExcel(excelPath);
         }
         catch (Exception ex)
         {
@@ -134,29 +133,65 @@ public class ConfigManager
             return;
         }
 
-        try
+        string jsonStr;
+        if (Path.HasExtension(exprotPath))
         {
-            //转成json字符串
-            jsonStr = this.ToJson(dict);
+            // 输出到单个文件里
+            try
+            {
+                //转成json字符串
+                jsonStr = ToJson(dict);
+            }
+            catch (Exception ex)
+            {
+                Message("表格转成json字符串错误 信息:" + ex.Message);
+                return;
+            }
+            try
+            {
+                //输出json文件
+                FileManager.Ins.ExportFile(jsonStr, exprotPath);
+                Message("JSON导出成功!");
+            }
+            catch (Exception ex)
+            {
+                Message("表格转成json错误 信息:" + ex.Message);
+                return;
+            }
         }
-        catch (Exception ex)
+        else
         {
-            Message("表格转成json字符串错误 信息:" + ex.Message);
-            return;
-        }
+            // 输出到多个文件
+            Dictionary<string, string> jsonDict = null;
+            try
+            {
+                //转成json字符串
+                jsonDict = ToJsonDict(dict);
+            }
+            catch (Exception ex)
+            {
+                Message("表格转成json字符串错误 信息:" + ex.Message);
+                return;
+            }
 
-        try
-        {
-            //输出json文件
-            FileManager.Ins.ExportFile(jsonStr, exprotPath);
-            Message("JSON导出成功!");
+            // 输出到多个文件里
+            foreach (var configName in jsonDict.Keys)
+            {
+                var fullPath = exprotPath + configName + ".json";
+                jsonStr = jsonDict[configName];
+                try
+                {
+                    //输出json文件
+                    FileManager.Ins.ExportFile(jsonStr, fullPath);
+                    Message(configName + "导出成功!");
+                }
+                catch (Exception ex)
+                {
+                    Message(configName + "表格转成json错误 信息:" + ex.Message);
+                    return;
+                }
+            }
         }
-        catch (Exception ex)
-        {
-            Message("表格转成json错误 信息:" + ex.Message);
-            return;
-        }
-
     }
 
     /// <summary>
@@ -184,7 +219,7 @@ public class ConfigManager
         try
         {
             //转化本地数据结构,创建表格字典
-            dict = ConfigManager.Ins.LoadExcel(excelPath, true);
+            dict = LoadExcel(excelPath, true);
         }
         catch (Exception ex)
         {
@@ -195,7 +230,7 @@ public class ConfigManager
         try
         {
             //转成json字符串
-            jsonDict = this.ToJsonDict(dict);
+            jsonDict = ToJsonDict(dict);
         }
         catch (Exception ex)
         {
