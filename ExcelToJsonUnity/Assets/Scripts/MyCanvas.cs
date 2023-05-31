@@ -53,16 +53,19 @@ public class MyCanvas : MonoBehaviour
         //ExcelManager.Ins.ExportFile(jsonStr, "E:/test/GameConfig.json");
 
         Screen.fullScreen = false;
-        ConfigPackingManager.Ins.messageCall = AddLog;
 
         InitProjectInfo();
         this.OnValueChanged(lastIndex);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
+        ConfigPackingManager.messageCall += AddLog;
+    }
 
+    private void OnDisable()
+    {
+        ConfigPackingManager.messageCall -= AddLog;
     }
 
     public void SaveProjectInfo()
@@ -145,7 +148,7 @@ public class MyCanvas : MonoBehaviour
             return;
         }
 
-        ConfigPackingManager.Ins.ExprotJson(pathInput.text, jsonInput.text);
+        ConfigPackingManager.ExprotJson(pathInput.text, jsonInput.text);
     }
 
     public void ExprotServerJson()
@@ -161,7 +164,7 @@ public class MyCanvas : MonoBehaviour
             return;
         }
 
-        ConfigPackingManager.Ins.ExprotServerJson(pathInput.text, jsonInput.text);
+        ConfigPackingManager.ExprotServerJson(pathInput.text, jsonInput.text);
     }
 
     public void ExprotLo()
@@ -177,7 +180,7 @@ public class MyCanvas : MonoBehaviour
             return;
         }
 
-        ConfigPackingManager.Ins.ExprotLO(pathInput.text, loInput.text);
+        ConfigPackingManager.ExprotLO(pathInput.text, loInput.text);
     }
 
     void Log(string str)

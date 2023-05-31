@@ -7,18 +7,12 @@ using System.IO;
 
 namespace ConfigPacking
 {
-    public class ConfigPackingManager
+    public static class ConfigPackingManager
     {
-        static ConfigPackingManager _ins = new ConfigPackingManager();
-        public static ConfigPackingManager Ins { get { return _ins; } }
-
-        public delegate void MessageCallback(string message);
-
-        private MessageCallback _msgCall;
+        public static event Action<string> messageCall;
 
 
-
-        string classTemplate = "" +
+        static string classTemplate = "" +
         "/// <summary> \n" +
         "/// Desc: $desc$\n" +
         "/// Excel: $filePath$\n" +
@@ -29,22 +23,17 @@ namespace ConfigPacking
         "$member$\n" +
         "}";
 
-        string memberTemplate = "" +
+        static string memberTemplate = "" +
             "    /// <summary> \n" +
             "    /// $desc$\n" +
             "    /// </summary>\n" +
             "    public $type$ $name$;\n\n";
 
-
-        private ConfigPackingManager() { }
-
-
-
         /// <summary>
         /// 导出lo
         /// </summary>
         /// <param name="dict"></param>
-        public void ExprotLO(string excelPath, string exprotPath)
+        public static void ExprotLO(string excelPath, string exprotPath)
         {
             try
             {
@@ -98,7 +87,7 @@ namespace ConfigPacking
         /// </summary>
         /// <param name="excelPath"></param>
         /// <param name="exprotPath"></param>
-        public void ExprotJson(string excelPath, string exprotPath)
+        public static void ExprotJson(string excelPath, string exprotPath)
         {
 
             try
@@ -201,7 +190,7 @@ namespace ConfigPacking
         /// </summary>
         /// <param name="excelPath"></param>
         /// <param name="exprotPath"></param>
-        public void ExprotServerJson(string excelPath, string exprotPath)
+        public static void ExprotServerJson(string excelPath, string exprotPath)
         {
 
             try
@@ -282,7 +271,7 @@ namespace ConfigPacking
         /// </summary>
         /// <param name="dict"></param>
         /// <returns></returns>
-        public string ToJson(Dictionary<string, LoData> dict)
+        public static string ToJson(Dictionary<string, LoData> dict)
         {
             //var jsonDict = new Dictionary<string, Dictionary<string, string>>();
             var jsonDict = JsonMapper.ToObject("{}") as IDictionary;
@@ -309,7 +298,7 @@ namespace ConfigPacking
             return str;
         }
 
-        public List<JsonData> LoDataToJsonDataList(LoData loData)
+        public static List<JsonData> LoDataToJsonDataList(LoData loData)
         {
             List<JsonData> ret = new List<JsonData>();
 
@@ -385,7 +374,7 @@ namespace ConfigPacking
             return ret;
         }
 
-        public Dictionary<string, string> ToJsonDict(Dictionary<string, LoData> dict)
+        public static Dictionary<string, string> ToJsonDict(Dictionary<string, LoData> dict)
         {
             var ret = new Dictionary<string, string>();
             foreach (var configName in dict.Keys)
@@ -415,7 +404,7 @@ namespace ConfigPacking
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public string LoDataToLoString(LoData data)
+        public static string LoDataToLoString(LoData data)
         {
             var memberStr = "";
             for (int i = 0; i < data.names.Count; i++)
@@ -454,7 +443,7 @@ namespace ConfigPacking
         /// 加载excel
         /// </summary>
         /// <param name="path"></param>
-        public Dictionary<string, LoData> LoadExcel(string path, bool isServer = false)
+        public static Dictionary<string, LoData> LoadExcel(string path, bool isServer = false)
         {
             //获得文件路径列表
             var fileList = FileManager.GetExcelFilePathList(path);
@@ -532,7 +521,7 @@ namespace ConfigPacking
         /// </summary>
         /// <param name="table"></param>
         /// <returns></returns>
-        public LoData GetLoDataByTable(DataTable table, bool isServer)
+        public static LoData GetLoDataByTable(DataTable table, bool isServer)
         {
             var loData = new LoData();
             loData.nameDesc = table.TableName;
@@ -656,17 +645,9 @@ namespace ConfigPacking
             return loData;
         }
 
-        void Message(string message)
+        static void Message(string message)
         {
-            if (_msgCall != null)
-            {
-                _msgCall(message);
-            }
-        }
-
-        public MessageCallback messageCall
-        {
-            set { _msgCall = value; }
+            messageCall?.Invoke(message);
         }
     }
 }
