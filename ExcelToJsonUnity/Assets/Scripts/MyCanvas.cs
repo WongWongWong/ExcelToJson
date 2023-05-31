@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using LitJson;
+using ConfigPacking;
 
 public class MyCanvas : MonoBehaviour
 {
@@ -52,7 +53,7 @@ public class MyCanvas : MonoBehaviour
         //ExcelManager.Ins.ExportFile(jsonStr, "E:/test/GameConfig.json");
 
         Screen.fullScreen = false;
-        ConfigManager.Ins.messageCall = AddLog;
+        ConfigPackingManager.Ins.messageCall = AddLog;
 
         InitProjectInfo();
         this.OnValueChanged(lastIndex);
@@ -61,7 +62,7 @@ public class MyCanvas : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void SaveProjectInfo()
@@ -73,7 +74,7 @@ public class MyCanvas : MonoBehaviour
         info.jsonPath = jsonInput.text;
         info.loPath = loInput.text;
 
-        if(string.IsNullOrEmpty(info.name))
+        if (string.IsNullOrEmpty(info.name))
         {
             Log("项目名称不能为空!");
             return;
@@ -83,7 +84,7 @@ public class MyCanvas : MonoBehaviour
         var infos = this.projectInfos;
         for (int i = 0; i < infos.Count; i++)
         {
-            if(info.name == infos[i].name)
+            if (info.name == infos[i].name)
             {
                 infos[i] = info;
                 isAdd = false;
@@ -91,7 +92,7 @@ public class MyCanvas : MonoBehaviour
             }
         }
 
-        if(isAdd)
+        if (isAdd)
         {
             infos.Add(info);
         }
@@ -109,7 +110,7 @@ public class MyCanvas : MonoBehaviour
         var infos = this.projectInfos;
         var index = this.lastIndex;
 
-        if(infos.Count == 0 || index >= infos.Count)
+        if (infos.Count == 0 || index >= infos.Count)
         {
             AddLog("项目信息为空,删除失败!");
             return;
@@ -119,7 +120,7 @@ public class MyCanvas : MonoBehaviour
 
         infos.RemoveAt(index);
         index += 1;
-        if(index >= infos.Count)
+        if (index >= infos.Count)
         {
             index = infos.Count - 1;
         }
@@ -133,7 +134,7 @@ public class MyCanvas : MonoBehaviour
 
     public void ExprotJson()
     {
-        if(string.IsNullOrEmpty(pathInput.text))
+        if (string.IsNullOrEmpty(pathInput.text))
         {
             Log("表格路径不能为空!");
             return;
@@ -144,7 +145,7 @@ public class MyCanvas : MonoBehaviour
             return;
         }
 
-        ConfigManager.Ins.ExprotJson(pathInput.text, jsonInput.text);
+        ConfigPackingManager.Ins.ExprotJson(pathInput.text, jsonInput.text);
     }
 
     public void ExprotServerJson()
@@ -160,7 +161,7 @@ public class MyCanvas : MonoBehaviour
             return;
         }
 
-        ConfigManager.Ins.ExprotServerJson(pathInput.text, jsonInput.text);
+        ConfigPackingManager.Ins.ExprotServerJson(pathInput.text, jsonInput.text);
     }
 
     public void ExprotLo()
@@ -176,7 +177,7 @@ public class MyCanvas : MonoBehaviour
             return;
         }
 
-        ConfigManager.Ins.ExprotLO(pathInput.text, loInput.text);
+        ConfigPackingManager.Ins.ExprotLO(pathInput.text, loInput.text);
     }
 
     void Log(string str)
@@ -186,7 +187,7 @@ public class MyCanvas : MonoBehaviour
         AddLog(str);
     }
 
-   public void AddLog(string str)
+    public void AddLog(string str)
     {
         var formatStr = "[$time$] $msg$\n";
         var timestr = DateTime.Now.ToLocalTime().ToString();
@@ -216,7 +217,7 @@ public class MyCanvas : MonoBehaviour
     {
         lastIndex = index;
         var infos = this.projectInfos;
-        if(infos.Count == 0)
+        if (infos.Count == 0)
         {
             return;
         }
@@ -233,7 +234,7 @@ public class MyCanvas : MonoBehaviour
     {
         get
         {
-            if(_infos == null)
+            if (_infos == null)
             {
                 var str = PlayerPrefs.GetString("PROJECT_INFOS", "[]");
                 _infos = JsonMapper.ToObject<List<ProjectInfoVO>>(str);
