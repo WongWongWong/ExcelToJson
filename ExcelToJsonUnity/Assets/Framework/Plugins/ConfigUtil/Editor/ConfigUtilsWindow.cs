@@ -28,7 +28,7 @@ namespace ConfigPacking.Editor
 
         static Vector2 _windowSize = new Vector2(600, 200);
 
-        [MenuItem("ConfigUtils/Config Builder", false, 102)]
+        [MenuItem("GameUtils/Config Builder", false, 102)]
         public static void OpenWindow()
         {
             ConfigUtilsWindow window = GetWindow<ConfigUtilsWindow>("配置构建工具", true, DockedWindowTypes);
