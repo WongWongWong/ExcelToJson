@@ -38,8 +38,8 @@ namespace ConfigPacking.Editor
         private void Awake()
         {
             _excelPath = PlayerPrefs.GetString(nameof(_excelPath), "D:\\svn\\metarBox\\Config-MetarBox-Trunk");
-            _loPath = PlayerPrefs.GetString(nameof(_loPath), "D:\\svn\\metarBox\\Client-MetarBox-Trunk\\Assets\\GameScript\\Lo");
-            _jsonPath = PlayerPrefs.GetString(nameof(_jsonPath), "D:\\svn\\metarBox\\Client-MetarBox-Trunk\\Assets\\GameRes\\Config\\");
+            _loPath = PlayerPrefs.GetString(nameof(_loPath), Application.dataPath + "\\GameScript\\Lo");
+            _jsonPath = PlayerPrefs.GetString(nameof(_jsonPath), Application.dataPath + "GameRes\\Config\\");
         }
 
         void OnEnable()
