@@ -316,16 +316,20 @@ namespace ConfigPacking
                     var valueStr = rowValue[name];
 
                     int int_val;
+                    long long_val;
                     double float_val;
                     bool isInt;
                     bool isFloat;
 
                     switch (type)
                     {
-                        //整形
-                        case "int":
+                        case "int": // int32
                             isInt = int.TryParse(valueStr, out int_val);
                             jd[name] = isInt ? int_val : 0;
+                            break;
+                        case "long": // int64
+                            isInt = long.TryParse(valueStr, out long_val);
+                            jd[name] = isInt ? long_val : 0;
                             break;
 
                         case "string":

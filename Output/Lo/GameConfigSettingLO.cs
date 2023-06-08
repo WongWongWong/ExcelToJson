@@ -25,5 +25,10 @@ public class GameConfigSettingLO
     /// </summary>
     public string TestValue;
 
+    /// <summary> 
+    /// int64
+    /// </summary>
+    public long longTest;
+
 
 }
