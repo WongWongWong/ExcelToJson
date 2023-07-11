@@ -29,6 +29,9 @@ namespace ConfigPacking
             "    /// </summary>\n" +
             "    public $type$ $name$;\n\n";
 
+        static string langTemplate = "" +
+            "    public string $name$ => LanguageManager.Instance.GetLanguageText($langId$);\n\n";
+
         /// <summary>
         /// 导出lo
         /// </summary>
@@ -324,6 +327,7 @@ namespace ConfigPacking
                     switch (type)
                     {
                         case "int": // int32
+                        case "lang": // 多语言
                             isInt = int.TryParse(valueStr, out int_val);
                             jd[name] = isInt ? int_val : 0;
                             break;
@@ -425,14 +429,24 @@ namespace ConfigPacking
                 var memberType = data.types[i];
                 switch (memberType)
                 {
+                    // 生成多语言函数
+                    case "lang":
+                        newMemberStr = newMemberStr.Replace("$type$", "int");
+                        newMemberStr = newMemberStr.Replace("$name$", data.names[i]);
+
+                        string langStr = langTemplate.Replace("$name$", $"{data.names[i]}Lang");
+                        langStr = langStr.Replace("$langId$", $"{data.names[i]}");
+
+                        newMemberStr += langStr;
+                        break;
                     //默认直接表格上填写的类型定义,特殊的另外写处理解析
                     default:
                         newMemberStr = newMemberStr.Replace("$type$", data.types[i]);
+                        newMemberStr = newMemberStr.Replace("$name$", data.names[i]);
                         break;
                 }
 
                 //newMemberStr = newMemberStr.Replace("$type$", data.types[i]);
-                newMemberStr = newMemberStr.Replace("$name$", data.names[i]);
                 memberStr += newMemberStr;
             }
 

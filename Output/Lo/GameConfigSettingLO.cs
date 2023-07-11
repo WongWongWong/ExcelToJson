@@ -30,5 +30,12 @@ public class GameConfigSettingLO
     /// </summary>
     public long longTest;
 
+    /// <summary> 
+    /// 多语言测试
+    /// </summary>
+    public int name;
+
+    public string nameLang => LanguageManager.Instance.GetLanguageText(name);
+
 
 }
