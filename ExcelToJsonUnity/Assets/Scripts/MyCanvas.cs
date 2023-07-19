@@ -79,7 +79,7 @@ public class MyCanvas : MonoBehaviour
 
         if (string.IsNullOrEmpty(info.name))
         {
-            Log("项目名称不能为空!");
+            AddLog("项目名称不能为空!");
             return;
         }
 
@@ -139,12 +139,12 @@ public class MyCanvas : MonoBehaviour
     {
         if (string.IsNullOrEmpty(pathInput.text))
         {
-            Log("表格路径不能为空!");
+            AddLog("表格路径不能为空!");
             return;
         }
         if (string.IsNullOrEmpty(jsonInput.text))
         {
-            Log("Json输出路径不能为空!");
+            AddLog("Json输出路径不能为空!");
             return;
         }
 
@@ -155,12 +155,12 @@ public class MyCanvas : MonoBehaviour
     {
         if (string.IsNullOrEmpty(pathInput.text))
         {
-            Log("表格路径不能为空!");
+            AddLog("表格路径不能为空!");
             return;
         }
         if (string.IsNullOrEmpty(jsonInput.text))
         {
-            Log("Json输出路径不能为空!");
+            AddLog("Json输出路径不能为空!");
             return;
         }
 
@@ -171,12 +171,12 @@ public class MyCanvas : MonoBehaviour
     {
         if (string.IsNullOrEmpty(pathInput.text))
         {
-            Log("表格路径不能为空!");
+            AddLog("表格路径不能为空!");
             return;
         }
         if (string.IsNullOrEmpty(loInput.text))
         {
-            Log("Json输出路径不能为空!");
+            AddLog("Json输出路径不能为空!");
             return;
         }
 
@@ -195,8 +195,12 @@ public class MyCanvas : MonoBehaviour
         var formatStr = "[$time$] $msg$\n";
         var timestr = DateTime.Now.ToLocalTime().ToString();
         var logStr = formatStr.Replace("$time$", timestr).Replace("$msg$", str);
-        logInput.text = logStr + logInput.text;
         logText.text = logStr + logText.text;
+
+        int maxLength = 5000;
+        if (logText.text.Length > maxLength)
+            logText.text = logText.text.Remove(maxLength, logText.text.Length - maxLength);
+        logInput.text = logText.text;
     }
 
     void InitProjectInfo()
