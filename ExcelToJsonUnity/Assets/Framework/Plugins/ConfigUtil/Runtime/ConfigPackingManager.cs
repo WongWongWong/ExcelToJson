@@ -111,10 +111,6 @@ namespace ConfigPacking
                     {
                         exprotPath += "Server\\";
                     }
-                    else
-                    {
-                        exprotPath += "Client\\";
-                    }
                     FileManager.CreateDirPath(exprotPath.Substring(0, exprotPath.LastIndexOf("\\") + 1));
                 }
                 else
@@ -122,10 +118,6 @@ namespace ConfigPacking
                     if (isServer)
                     {
                         exprotPath += "Server/";
-                    }
-                    else
-                    {
-                        exprotPath += "Client/";
                     }
                     var test1 = exprotPath.LastIndexOf("/");
                     string test = exprotPath.Substring(0, 10);
