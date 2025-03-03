@@ -591,13 +591,30 @@ namespace ConfigPacking
 
                     switch (type)
                     {
-                        case "int": // int32
                         case "lang": // 多语言
-                        case "long": // int64
                             isInt = long.TryParse(valueStr, out long_val);
                             voStr = string.Format(temp, name, (isInt ? long_val : 0));
                             break;
-
+                        case "int": // int32
+                        case "long": // int64
+                            isInt = int.TryParse(valueStr, out int_val);
+                            if (isInt)
+                            {
+                                voStr = string.Format(temp, name, int_val);
+                            }
+                            else
+                            {
+                                isFloat = double.TryParse(valueStr, out float_val);
+                                if (isFloat)
+                                {
+                                    voStr = string.Format(temp, name, (long)float_val);
+                                }
+                                else
+                                {
+                                    voStr = string.Format(temp, name, 0);
+                                }
+                            }
+                            break;
                         case "string":
                             if (valueStr != null)
                             {
