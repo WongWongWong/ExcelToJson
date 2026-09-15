@@ -184,8 +184,10 @@ public class MyCanvas : MonoBehaviour
         }
 
 
+        AddLog("================= START =================");
         string output = FixedPath(jsonInput.text);
         ConfigPackingManager.ExprotLua(pathInput.text, output);
+        AddLog("================= END =================");
     }
 
     public void ExprotServerJson()
