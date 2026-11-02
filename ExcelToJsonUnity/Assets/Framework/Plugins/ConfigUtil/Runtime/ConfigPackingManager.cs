@@ -98,7 +98,7 @@ namespace ConfigPacking
         /// </summary>
         /// <param name="excelPath"></param>
         /// <param name="exprotPath"></param>
-        public static void ExprotLua(string excelPath, string exprotPath, bool isServer = false)
+        public static void ExprotLua(string excelPath, string exprotPath, bool isServer = false,string suffix = ".lua")
         {
             try
             {
@@ -186,7 +186,7 @@ namespace ConfigPacking
                 // 输出到多个文件里
                 foreach (var configName in jsonDict.Keys)
                 {
-                    var fullPath = exprotPath + configName + ".lua";
+                    var fullPath = exprotPath + configName + suffix;
                     jsonStr = jsonDict[configName];
                     try
                     {

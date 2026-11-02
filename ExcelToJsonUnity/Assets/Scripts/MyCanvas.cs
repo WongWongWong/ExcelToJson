@@ -190,6 +190,26 @@ public class MyCanvas : MonoBehaviour
         AddLog("================= END =================");
     }
 
+    public void ExprotLuau()
+    {
+        if (string.IsNullOrEmpty(pathInput.text))
+        {
+            AddLog("表格路径不能为空!");
+            return;
+        }
+        if (string.IsNullOrEmpty(jsonInput.text))
+        {
+            AddLog("Json输出路径不能为空!");
+            return;
+        }
+
+
+        AddLog("================= START =================");
+        string output = FixedPath(jsonInput.text);
+        ConfigPackingManager.ExprotLua(pathInput.text, output,false,".luau");
+        AddLog("================= END =================");
+    }
+
     public void ExprotServerJson()
     {
         if (string.IsNullOrEmpty(pathInput.text))
